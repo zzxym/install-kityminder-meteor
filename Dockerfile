@@ -8,7 +8,7 @@ RUN useradd mindx
 USER mindx
 RUN curl https://install.meteor.com | sh
 WORKDIR /var/mindx/meteor
-RUN git clone https://github.com/yivanus/kityminder-meteor.git
+RUN git clone https://github.com/zzxym/install-kityminder-meteor.git
 ENV PATH $PATH:$HOME/.meteor
 RUN meteor create --bare /var/mindx/meteor/kityminder-meteor-demo
 WORKDIR /var/mindx/meteor/kityminder-meteor-demo/
