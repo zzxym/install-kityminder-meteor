@@ -1,5 +1,6 @@
-FROM ubuntu:16.04
-MAINTAINER yivanus yivanus@gmail.com 
+FROM ubuntu:18.04
+ENV METEOR_NPM_REBUILD_FLAGS=--update-binary
+MAINTAINER xym xym@xiaolin.cc 
 RUN mkdir -p /var/mindx/meteor && chmod 777 /var/mindx/meteor 
 RUN apt-get update && apt-get install -y git 
 ENV HOME /var/mindx/meteor
@@ -12,7 +13,15 @@ RUN git clone https://github.com/zzxym/install-kityminder-meteor.git
 ENV PATH $PATH:$HOME/.meteor
 RUN meteor create --bare /var/mindx/meteor/kityminder-meteor-demo
 WORKDIR /var/mindx/meteor/kityminder-meteor-demo/
-RUN meteor remove blaze-html-templates && meteor add angular-templates && meteor npm install --save angular angular-meteor && meteor add iron:router && meteor add meteorhacks:picker && meteor add session && meteor add autopublish 
+RUN meteor remove blaze-html-templates && \
+    meteor add angular-templates@1.3.2 && \
+    meteor npm install --save angular@1.6.9 angular-meteor@1.3.12 && \
+    meteor add iron:router@1.1.2 && \
+    meteor add meteorhacks:picker@1.0.3 && \
+    meteor add session@1.1.7 && \
+    meteor add autopublish@1.0.7 && \
+    meteor list --tree && \
+    rm -rf $HOME/.npm $HOME/.meteor/local 
 WORKDIR /var/mindx/meteor/kityminder-meteor 
 RUN cp -r -f README.md client collection packages.json server public /var/mindx/meteor/kityminder-meteor-demo/ 
 WORKDIR /var/mindx/meteor/kityminder-meteor-demo/ 
