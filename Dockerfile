@@ -7,7 +7,9 @@ ENV HOME /var/mindx/meteor
 ENV LC_ALL "C"
 RUN useradd mindx
 USER mindx
-RUN curl https://install.meteor.com | sh
+RUN echo $PATH && meteor --version
+RUN curl --progress-bar https://install.meteor.com | sh
+ENV PATH $PATH:/home/mindx/.meteor
 WORKDIR /var/mindx/meteor
 RUN meteor reset && meteor update --release 1.6.1
 RUN git clone https://github.com/zzxym/install-kityminder-meteor.git
