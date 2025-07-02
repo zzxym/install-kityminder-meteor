@@ -2,12 +2,26 @@ FROM ubuntu:18.04
 ENV METEOR_NPM_REBUILD_FLAGS=--update-binary
 MAINTAINER xym xym@xiaolin.cc 
 RUN mkdir -p /var/mindx/meteor && chmod 777 /var/mindx/meteor 
-RUN apt-get update && apt-get install -y git 
+RUN apt-get update \
+    && apt-get install -y --fix-missing --no-install-recommends \
+        ca-certificates \
+        curl \
+        git \
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get clean \
+    && npm cache clean --force 
 ENV HOME /var/mindx/meteor
 ENV LC_ALL "C"
 RUN useradd mindx
 USER mindx
-RUN echo $PATH && meteor --version
+RUN npm install -g meteor@2.13.1 \
+    && ln -s $HOME/.meteor/meteor /usr/local/bin/meteor \
+    && meteor --version \
+    && meteor reset
+ENV PATH $PATH:/var/mindx/meteor/.meteor
+RUN which meteor && meteor --version
 RUN curl --progress-bar https://install.meteor.com | sh
 ENV PATH $PATH:/home/mindx/.meteor
 WORKDIR /var/mindx/meteor
